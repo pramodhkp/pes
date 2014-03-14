@@ -34,13 +34,14 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',    
+    'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pes',
     'south',
     'college',
-    'pes',
     'dajaxice',
     'dajax',
+    'postman'
 )
 
 TEMPLATE_LOADERS = (
@@ -56,7 +57,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.core.context_processors.request',
-    'django.contrib.messages.context_processors.messages'
+    'django.contrib.messages.context_processors.messages',
+    'postman.context_processors.inbox'
 )
 
 STATICFILES_FINDERS = (
@@ -75,10 +77,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = (
-    'college.backends.EmailAuthBackend',
+# AUTHENTICATION_BACKENDS = (
+#     'college.backends.EmailAuthBackend',
 
-)
+# )
 
 ROOT_URLCONF = 'pes.urls'
 
@@ -113,10 +115,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "dist"),    
+    os.path.join(BASE_DIR, "dist"),
 )
 
 
 STATIC_URL = '/dist/'
 
 # STATIC_ROOT = BASE_DIR + '/dist/'
+
+
+# POSTMAN PARAMETERS
+
+POSTMAN_DISALLOW_ANONYMOUS = True

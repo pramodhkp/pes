@@ -23,13 +23,13 @@
 
     <title>Signin Template for Bootstrap</title>
 
-    
+
 
     <!-- Bootstrap core CSS -->
     <link href="/dist/css/bootstrap.css" rel="stylesheet">
 
-    
-    
+
+
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -58,7 +58,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Link</a></li>
+            <li><a data-toggle="modal" href="#myModal">Messages</a></li>
             <li><a href="#">Link</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
@@ -75,14 +75,13 @@
           </ul>
           <form class="navbar-form navbar-left" role="search" method="post">
             {% csrf_token %}
-            <div class="form-group"> 
-              <li class="dropdown"> 
-              <input type="text" class="form-control nav-search dropdown-toggle" data-toggle="dropdown" placeholder="Search for projects">             
+            <div class="form-group">
+              <li class="dropdown">
+              <input type="text" class="form-control nav-search dropdown-toggle" data-toggle="dropdown" placeholder="Search for projects">
               <ul id = "search-dropdown" class="dropdown-menu">
-                
               </ul>
               </li>
-            </div>            
+            </div>
           </form>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="">Link</a></li>
@@ -102,21 +101,33 @@
     </nav>
 
 
+    {% if student %}
+
+    <div>Student profile - {{ name }}</div>
+
+    {% endif %}
+
+    {% if teacher %}
+
+    <div>Teacher profile - {{ name }}</div>
+
+    {% endif %}
+
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="../../dist/js/bootstrap.min.js"></script>  
+    <script src="/dist/js/bootstrap.min.js"></script>
     {% dajaxice_js_import %}
     <script type="text/javascript">
 
       $(document).on('keypress', '.nav-search', function(e) {
         console.log("key pressed");
-        var code = e.which || e.keyCode; 
+        var code = e.which || e.keyCode;
         if(code == 32) {
           Dajaxice.college.get_projects(my_js_callback, {'textarea':$(".nav-search").val()});
         }
 
       });
 
-      function my_js_callback(data){ 
+      function my_js_callback(data){
           $("#search-dropdown").html("")
           $.each(data.result, function(index, value){
             $("#search-dropdown").append(
@@ -126,9 +137,7 @@
               .append($("<p>").append(value.details))
             .append($("<li class='divider'>")))
 
-
-
-          })                 
+          })
       }
 
     </script>
