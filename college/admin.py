@@ -11,6 +11,7 @@ class TeacherAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
 	list_display = ('name',)
 
+
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Project, ProjectAdmin)
