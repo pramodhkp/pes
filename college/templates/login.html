@@ -34,23 +34,18 @@
 
       <form role="form" action="/college/login/" method="POST">
         {% csrf_token %}
-
-        <div class="form-group">
-          {% if error %} <div class="alert alert-danger"> Email and password does not match! </div> {% endif %}
-        </div>
         <div class="form-group">
           <h2>Please sign in</h2>
-          <label for="exampleInputEmail1">Email address</label>
+          {% if error %} <div class="alert alert-danger">Looks like usn/password does not match. Check again!</div> {% endif %}
+          <label for="exampleInputEmail1">USN Number</label>
           <input type="text" class="form-control" name="userid" placeholder="Enter email">
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
           <input type="password" class="form-control" name="password" placeholder="Password">
         </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Check me out
-          </label>
+        <div class="form-group">
+          <a href='college/resetpassword/'> Forgot password? </a>
         </div>
         <button type="submit" class="btn btn-default" href="test.html">Submit</button>
       </form>

@@ -1,6 +1,8 @@
 Django==1.6.1
 South==0.8.4
+akismet==0.2.0
 argparse==1.2.1
+django-crispy-forms==1.4.0
 django-dajax==0.9.2
 django-dajaxice==0.5.5
 django-postman==3.1.0

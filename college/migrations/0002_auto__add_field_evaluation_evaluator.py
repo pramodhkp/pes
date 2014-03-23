@@ -8,83 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Student'
-        db.create_table(u'college_student', (
-            ('s_auth', self.gf('django.db.models.fields.related.OneToOneField')(default='None', to=orm['auth.User'], unique=True)),
-            ('s_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('email', self.gf('django.db.models.fields.EmailField')(max_length=70)),
-        ))
-        db.send_create_signal(u'college', ['Student'])
-
-        # Adding model 'Teacher'
-        db.create_table(u'college_teacher', (
-            ('t_auth', self.gf('django.db.models.fields.related.OneToOneField')(default='None', to=orm['auth.User'], unique=True)),
-            ('t_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('email', self.gf('django.db.models.fields.EmailField')(max_length=70)),
-        ))
-        db.send_create_signal(u'college', ['Teacher'])
-
-        # Adding model 'Project'
-        db.create_table(u'college_project', (
-            ('p_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('details', self.gf('django.db.models.fields.TextField')()),
-            ('duration', self.gf('django.db.models.fields.IntegerField')()),
-            ('progress', self.gf('django.db.models.fields.IntegerField')()),
-        ))
-        db.send_create_signal(u'college', ['Project'])
-
-        # Adding M2M table for field members_s on 'Project'
-        m2m_table_name = db.shorten_name(u'college_project_members_s')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('project', models.ForeignKey(orm[u'college.project'], null=False)),
-            ('student', models.ForeignKey(orm[u'college.student'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['project_id', 'student_id'])
-
-        # Adding M2M table for field members_t on 'Project'
-        m2m_table_name = db.shorten_name(u'college_project_members_t')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('project', models.ForeignKey(orm[u'college.project'], null=False)),
-            ('teacher', models.ForeignKey(orm[u'college.teacher'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['project_id', 'teacher_id'])
-
-        # Adding model 'Evaluation'
-        db.create_table(u'college_evaluation', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['college.Project'])),
-            ('score', self.gf('django.db.models.fields.IntegerField')()),
-            ('progress', self.gf('django.db.models.fields.IntegerField')()),
-            ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal(u'college', ['Evaluation'])
+        # Adding field 'Evaluation.evaluator'
+        db.add_column(u'college_evaluation', 'evaluator',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['college.Teacher']),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'Student'
-        db.delete_table(u'college_student')
-
-        # Deleting model 'Teacher'
-        db.delete_table(u'college_teacher')
-
-        # Deleting model 'Project'
-        db.delete_table(u'college_project')
-
-        # Removing M2M table for field members_s on 'Project'
-        db.delete_table(db.shorten_name(u'college_project_members_s'))
-
-        # Removing M2M table for field members_t on 'Project'
-        db.delete_table(db.shorten_name(u'college_project_members_t'))
-
-        # Deleting model 'Evaluation'
-        db.delete_table(u'college_evaluation')
+        # Deleting field 'Evaluation.evaluator'
+        db.delete_column(u'college_evaluation', 'evaluator_id')
 
 
     models = {
@@ -119,6 +51,7 @@ class Migration(SchemaMigration):
         },
         u'college.evaluation': {
             'Meta': {'object_name': 'Evaluation'},
+            'evaluator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['college.Teacher']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'progress': ('django.db.models.fields.IntegerField', [], {}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['college.Project']"}),

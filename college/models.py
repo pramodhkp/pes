@@ -33,3 +33,13 @@ class Project(models.Model):
 
 	def __unicode__(self):
 		return 'Project:'+ ' ' + self.name
+
+
+class Evaluation(models.Model):
+	project = models.ForeignKey(Project)
+	evaluator = models.ForeignKey(Teacher)
+	score = models.IntegerField(help_text ='In percentage')
+	progress = models.IntegerField(help_text='In percentage')
+	timestamp = models.DateTimeField(auto_now_add=True)
+
+
