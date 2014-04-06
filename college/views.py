@@ -38,6 +38,9 @@ def update_project_progress(projects):
 			project.progress = 0
 		project.save()
 
+def main(request):
+	return render(request, "home.html")
+
 # Authorize the user with USN and password
 # Check whether the logged in user is a teacher/student and redirect accordingly.
 def login(request):
