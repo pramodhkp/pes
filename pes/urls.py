@@ -12,6 +12,7 @@ urlpatterns = patterns('',
 
 	url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
     # Examples:
+    url(r'^college/main/$', 'college.views.main', name='main'),
     url(r'^college/home/$', 'college.views.home', name='home'),
     url(r'^college/logout/$', 'college.views.logout', name='logout'),
     url(r'^college/login/$', 'college.views.login', name='login'),
@@ -22,7 +23,6 @@ urlpatterns = patterns('',
     url(r'^college/projects/(\d+)/$', 'college.views.project_details', name='project_details'),
     url(r'^college/teacher/$', 'college.views.dashboard_teacher', name='home'),
     url(r'^college/editprofile/$', 'college.views.edit_profile', name='edit_profile'),
-    url(r'^project/comments/$', include('fluent_comments.urls')),
     (r'^college/messages/', include('postman.urls')),
     # url(r'^blog/', include('blog.urls')),
 
