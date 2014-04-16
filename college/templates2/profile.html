@@ -1,0 +1,17 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+
+<div class="media">
+  <a class="pull-left" href="#">
+    <img class="img-circle media-object" src="holder.js/128x128" alt="...">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">{{ profile.first_name }}'s profile</h4>
+    Full name : {{ profile.first_name }} {{ profile.last_name }}<br>
+    Email ID : {{ profile.email }}<br>
+    Projects I'm working on: {% for project in projects %} {{ project.name }}, {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

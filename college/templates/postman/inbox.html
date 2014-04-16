@@ -1,0 +1,22 @@
+{% extends "postman/base_folder.html" %}
+{% load i18n %}{% load postman_tags %}
+{% block postman_menu %}
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+            	{% postman_unread as unread_count %}
+              <li class="nav-header">Options</li>
+              <li class="active"><a href="{% url "postman_inbox" %} "><i class="icon-inbox"></i>{% trans "Inbox" %}
+                {% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}</a></li>
+              <li><a href="{% url "postman_sent" %} "><i class="icon-share"></i>{% trans "Sent Messages" %}</a></li>
+              <li><a href="{% url "postman_write" %} "><i class="icon-pencil"></i>{% trans "Write" %}</a></li>
+              <li><a href="{% url "postman_archives" %} "><i class="icon-book"></i>{% trans "Archives" %}</a></li>
+              <li><a href="{% url "postman_trash" %} "><i class="icon-trash"></i>{% trans "Trash" %}</a></li>
+
+            </ul>
+          </div>
+{% endblock %}
+
+{% block pm_undelete_button %}{% endblock %}
+{% block pm_recipient_header %}{% endblock %}
+{% block pm_date %}{% trans "Received" %}{% endblock %}
+{% block pm_recipient_cell %}{% endblock %}

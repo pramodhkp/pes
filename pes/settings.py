@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'college',
     'dajaxice',
     'dajax',
-    'postman'
+    'postman',
 )
 
 TEMPLATE_LOADERS = (
@@ -129,3 +129,7 @@ STATIC_URL = '/dist/'
 POSTMAN_DISALLOW_ANONYMOUS = True
 POSTMAN_AUTO_MODERATE_AS = True
 
+# DISQUS PARAMETERS
+
+DISQUS_API_KEY = '4oTx6eWZLtgnvqIs9CIhOEg0C2chdFbXO4Xip7XI29zd0bCuHaiSg7HUA7Jkw9hj'
+DISQUS_WEBSITE_SHORTNAME = 'pes'

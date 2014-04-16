@@ -25,11 +25,25 @@ class LoginTest(TestCase):
 	def test_teacher_login(self):
 		c = Client()
 		res = c.get('/college/login/')
-		response = c.post('/college/login/', {'userid' : 'teachertest', 'password': 'pkp' }, follow=True)
+		response = c.post('/college/login/', {'userid' : 'teachetest', 'password': 'pkp' }, follow=True)
 		self.assertEqual(response.status_code, 200)
 		self.assertRedirects(response, '/college/teacher/')
 		invalResponse = c.post('/college/login/', {'userid' : 'wrongtest', 'password' : 'pkp'}, follow=True)
 		self.assertEqual(invalResponse.status_code, 200)
+
+class EvaluationTest(TestCase):
+	def test_eval_valid(self):
+		self.assertEqual(True, True)
+
+	def test_eval_invalid(self):
+		self.assertEqual(True, True)
+
+class SearchTest(TestCase):
+	def test_search_valid(self):
+		self.assertEqual(True, True)
+
+	def test_search_invalid(self):
+		self.assertEqual(True, True)
 
 
 

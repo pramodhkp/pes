@@ -38,6 +38,11 @@ class Project(models.Model):
 class Evaluation(models.Model):
 	project = models.ForeignKey(Project)
 	evaluator = models.ForeignKey(Teacher)
+	submission = models.IntegerField(help_text="B/w 1 -100")
+	quality = models.IntegerField(help_text="B/w 1 -100")
+	output = models.IntegerField(help_text="B/w 1 -100")
+	research = models.IntegerField(help_text="B/w 1 -100")
+	presentation = models.IntegerField(help_text="B/w 1 -100")
 	score = models.IntegerField(help_text ='In percentage')
 	progress = models.IntegerField(help_text='In percentage')
 	timestamp = models.DateTimeField(auto_now_add=True)

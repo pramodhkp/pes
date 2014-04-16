@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from college.models import Project, Student, Teacher, Evaluation
+import random
 
 
 def get_student_projects(user, id):
@@ -81,6 +82,51 @@ def home(request):
 		return redirect('/college/teacher/')
 
 
+@login_required(login_url='/college/login/')
+def project_list_student(request):
+	user = request.user.student
+	name = user.first_name + ' ' + user.last_name
+	studentFlag = True
+	id = user.s_id
+	userProjects = get_student_projects(user, id)
+	finProjects = []
+	ongProjects = []
+	for project in userProjects:
+		if project.progress != 100:
+			ongProjects.append(project)
+		else:
+			finProjects.append(project)
+
+	for project in userProjects:
+		evals = project.evaluation_set.all()
+
+	return render(request, "projectlist.html", {'student': studentFlag, 'finProjects': finProjects, 'ongProjects': ongProjects,
+												 'name': name, 'evals': evals})
+
+
+@login_required(login_url='/college/login/')
+def project_list_teacher(request):
+	user = request.user.teacher
+	name = user.first_name + ' ' + user.last_name
+	teacherFlag = True
+	id = user.t_id
+	userProjects = get_teacher_projects(user, id)
+	finProjects = []
+	ongProjects = []
+	for project in userProjects:
+		if project.progress != 100:
+			ongProjects.append(project)
+		else:
+			finProjects.append(project)
+
+	for project in userProjects:
+		evals = project.evaluation_set.all()
+
+	return render(request, "projectlist.html", { 'teacher': teacherFlag, 'finProjects': finProjects, 'ongProjects': ongProjects,
+												 'name': name, 'evals': evals})
+
+
+
 # Responsible for teacher dashboard. Sends details about projects under a teacher.
 @login_required(login_url='/college/login/')
 def dashboard_teacher(request):
@@ -89,8 +135,20 @@ def dashboard_teacher(request):
 	teacherFlag = True
 	id = user.t_id
 	userProjects = get_teacher_projects(user, id)
+	finished = 0
+	ongoing = 0
+	evals = []
+	for project in userProjects:
+		if project.progress == 100:
+			finished += 1
+		else:
+			ongoing += 1
+	if userProjects:
+		randProject = userProjects[0]
+		evals = randProject.evaluation_set.all()
 	return render(request, "dashboard.html", {'teacher': user, 'name' : name,
-													'projects': userProjects})
+													'projects': userProjects, 'fincount': finished, 
+													'ongcount': ongoing, 'evals': evals })
 
 # Responsible for student dashboard. Sends details about projects under a student.
 @login_required(login_url='/college/login/')
@@ -100,8 +158,20 @@ def dashboard_student(request):
 	studentFlag = True
 	id = user.s_id
 	userProjects = get_student_projects(user, id)
+	finished = 0
+	ongoing = 0
+	evals = []
+	for project in userProjects:
+		if project.progress == 100:
+			finished += 1
+		else:
+			ongoing += 1
+	if userProjects:
+		randProject = userProjects[0]
+		evals = randProject.evaluation_set.all()
 	return render(request, "dashboard.html", {'student': user, 'name' : name,
-													'projects': userProjects})
+													'projects': userProjects, 'fincount': finished, 'ongcount': ongoing,
+													'evals': evals })
 
 # Student profile
 @login_required(login_url='/college/login/')
@@ -148,20 +218,19 @@ def evaluate_project(request, id):
 	else:
 		sum = 0
 		user = request.user.teacher
-		sum = int(request.POST['submission'])+int(request.POST['output'])+ \
-						int(request.POST['quality'])+int(request.POST['research'])+ \
-						int(request.POST['presentation'])
-		# for key in request.POST:
-		# 	if str(key) != 'csrfmiddlewaretoken':
-		# 		sum = sum + int(request.POST[key])
+		submission = int(request.POST['submission'])
+		output = int(request.POST['output'])
+		research = int(request.POST['research'])
+		quality = int(request.POST['quality'])
+		presentation = int(request.POST['presentation'])
+		sum = submission + output + quality + research + presentation
 		length = len(request.POST) -2
-		print sum
-		print length
 		average = int(sum)/length
-		print average
 		project = Project.objects.get(p_id=id)
 		progress = request.POST['progress']
-		e = Evaluation(project=project, evaluator=user, progress=progress, score=int(average))
+		e = Evaluation(project=project, submission=submission, output= output, research=research,
+							 quality= quality, presentation=presentation, evaluator=user,
+							 		progress=progress, score=int(average))
 		e.save()
 		projects = Project.objects.all()
 		update_project_progress(projects)

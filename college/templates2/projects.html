@@ -1,0 +1,55 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	{% if evals %}
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+
+      var populator = [
+      		['Time', 'Evaluator']
+      	]
+
+      {% for e in evals %}
+      	populator.push(['{{ e.timestamp }}', {{ e.score }}])
+      {% endfor %}
+
+      console.log(populator)
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(populator);
+
+        var options = {
+          title: 'Project evaluation details',
+          curveType: 'function'
+        };
+
+        var container = document.getElementById('chart_div');
+        container.innerHTML = '';
+        var chart = new google.visualization.LineChart(container);
+        chart.draw(data, options);
+      }
+    </script>
+    {% endif %}
+
+<h2 class="text-center">{{ project.name }}</h2>
+
+<h3> Details: </h3>
+<p> {{ project.details }} </p>
+
+<h3>Project status: </h3>
+
+<div class="well" id="chart_div"> Evaluation pending..</div>
+
+<h3> Project mentors: </h3>
+
+<ul>
+{% for teachers in project.members_t.all %}
+<li>{{ teachers.first_name }} {{ teachers.last_name }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
+

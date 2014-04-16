@@ -1,49 +1,18 @@
 {% extends "dashboard.html" %}
 
+<title> Projects </title>
 {% block content %}
 
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-	{% if evals %}
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-
-      var populator = [
-      		['Time', 'Evaluator']
-      	]
-
-      {% for e in evals %}
-      	populator.push(['{{ e.timestamp }}', {{ e.score }}])
-      {% endfor %}
-
-      console.log(populator)
-
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable(populator);
-
-        var options = {
-          title: 'Project evaluation details',
-          curveType: 'function'
-        };
-
-        var container = document.getElementById('chart_div');
-        container.innerHTML = '';
-        var chart = new google.visualization.LineChart(container);
-        chart.draw(data, options);
-      }
-    </script>
-    {% endif %}
-
+<div class="container">
 <h2 class="text-center">{{ project.name }}</h2>
 
 <h3> Details: </h3>
+<hr/>
+
 <p> {{ project.details }} </p>
 
-<h3>Project status: </h3>
-
-<div class="well" id="chart_div"> Evaluation pending..</div>
-
 <h3> Project mentors: </h3>
+<hr/>
 
 <ul>
 {% for teachers in project.members_t.all %}
@@ -51,5 +20,72 @@
 {% endfor %}
 </ul>
 
+<h3>Project evaluation summary </h3>
+<hr/>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> {{ project.name }} </h3>
+      </div>
+      <div class="panel-body">
+        <div id="morris-chart-area"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /.row -->
+
+<h3>Evaluations breakdown </h3>
+<hr/>
+
+<div class="row">
+          {% for e in evals %}
+          <div class="col-lg-4">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Date of eval - {{ e.timestamp.date }}</h3>
+              </div>
+              <div class="panel-body">
+                <div id="morris-chart-donut-{{ e.id }}"></div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div><!-- /.row -->
+
+
+
+</div>
 {% endblock %}
 
+{% block javascript %}
+{{ block.super }}
+
+<!--<script type="text/javascript">
+
+      Morris.Area({
+        // ID of the element in which to draw the chart.
+        element: 'morris-chart-area',
+        // Chart data records -- each entry in this array corresponds to a point on
+        // the chart.
+        data: [
+
+          {% for e in evals %}
+            {d: '{{ e.timestamp.date.isoformat }}', scores: {{ e.score }} },
+          {% endfor %}
+
+        ],
+        // The name of the data record attribute that contains x-visitss.
+        xkey: 'd', 
+        // A list of names of data record attributes that contain y-visitss.
+        ykeys: ['scores'],
+        // Labels for the ykeys -- will be displayed when you hover over the
+        // chart.
+        labels: ['Score'],
+        // Disables line smoothing
+        smooth: false,
+      });
+</script>-->
+
+{% endblock %}
