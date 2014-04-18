@@ -4,7 +4,8 @@
     {% load staticfiles %}
     {% load dajaxice_templatetags %}
     {% load postman_tags %}
-
+    {% load disqus_tags %}
+    {% disqus_dev %}
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,10 +22,6 @@
       #search-dropdown {
         width: 600px;
         padding: 5px;
-      }
-
-      div.projects {
-        margin: 20px;
       }
 
     </style>
@@ -60,7 +57,7 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav side-nav">
             <li class="active"><a href="index.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li><a href="charts.html"><i class="fa fa-bar-chart-o"></i> Reports </a></li>
+            <li><a href="/college/reportlist/"><i class="fa fa-bar-chart-o"></i> Reports </a></li>
             <li><a href="/college/{% if student %}student{% else %}teacher{% endif %}/projectlist"><i class="fa fa-table"></i> Projects </a></li>
             <li><a href="forms.html"><i class="fa fa-edit"></i> Evaluations </a></li>
           </ul>
@@ -81,24 +78,11 @@
               {% postman_unread as unread_count %}
               <a href="/college/messages/"><i class="fa fa-envelope"></i> Messages {% if unread_count %}<span class="badge">{{ unread_count }}</span> {% endif %} </a>
             </li>
-            <!--<li class="dropdown alerts-dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> Alerts <span class="badge">3</span> <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Default <span class="label label-default">Default</span></a></li>
-                <li><a href="#">Primary <span class="label label-primary">Primary</span></a></li>
-                <li><a href="#">Success <span class="label label-success">Success</span></a></li>
-                <li><a href="#">Info <span class="label label-info">Info</span></a></li>
-                <li><a href="#">Warning <span class="label label-warning">Warning</span></a></li>
-                <li><a href="#">Danger <span class="label label-danger">Danger</span></a></li>
-                <li class="divider"></li>
-                <li><a href="#">View All</a></li>
-              </ul>
-            </li>-->
+
             <li class="dropdown user-dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ name }}<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a {% if student %} href="{{ student.s_id }}" {% else %} href="{{ teacher.t_id }}" {% endif %}><i class="fa fa-user"></i> Profile</a></li>
-                <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
                 <li class="divider"></li>
                 <li><a href="/college/logout/"><i class="fa fa-power-off"></i> Log Out</a></li>
               </ul>
@@ -120,8 +104,8 @@
           </div>
         </div><!-- /.row -->
 
-        <div class="row">
-          <div class="col-lg-3">
+        <!--<div class="row">
+          <div class="col-lg-4">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <div class="row">
@@ -129,14 +113,14 @@
                     <i class="fa fa-comments fa-5x"></i>
                   </div>
                   <div class="col-xs-6 text-right">
-                    <p class="announcement-heading">45</p>
+                    <p class="announcement-heading"></p>
                     <p class="announcement-text">Discussions</p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-lg-3">
+          </div>-->
+          <div class="col-lg-6">
             <div class="panel panel-warning">
               <div class="panel-heading">
                 <div class="row">
@@ -149,7 +133,7 @@
                   </div>
                 </div>
               </div>
-              <a href="#">
+              <a href="/college/projectlist/">
                 <div class="panel-footer announcement-bottom">
                   <div class="row">
                     <div class="col-xs-6">
@@ -163,7 +147,7 @@
               </a>
             </div>
           </div>
-          <div class="col-lg-3">
+          <div class="col-lg-6">
             <div class="panel panel-danger">
               <div class="panel-heading">
                 <div class="row">
@@ -176,7 +160,7 @@
                   </div>
                 </div>
               </div>
-              <a href="#">
+              <a href="/college/projectlist/">
                 <div class="panel-footer announcement-bottom">
                   <div class="row">
                     <div class="col-xs-6">
@@ -259,7 +243,7 @@
               <ul class="list-group">
                 {% for project in projects %}
                 <li class="list-group-item">
-                  {{ project.name }}
+                  {{ project.name }} ({{ project.progress }}%)
                   <div class="progress progress-striped">
                     <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{ project.progress }}%">
                       <span class="sr-only">{{ project.progress }}% Complete</span>
@@ -277,6 +261,7 @@
                 <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Your recent activity </h3>
               </div>
               <div class="panel-body">
+                {% disqus_recent_comments techmonk 5 50 0 24 %}
               </div>
             </div>
           </div>
@@ -293,12 +278,8 @@
     <script src="/dist/js/bootstrap.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
-    {% endblock %}
+    <script src="/dist/js/holder.js"></script>
 
-    <!-- Page Specific Plugins -->
-
-    <script src="/dist/js/tablesorter/jquery.tablesorter.js"></script>
-    <script src="/dist/js/tablesorter/tables.js"></script>
     {% dajaxice_js_import %}
     <script type="text/javascript">
 
@@ -348,6 +329,18 @@
       }
     </script>
 
+
+    {% endblock %}
+
+    <!-- Page Specific Plugins -->
+    {%  block page_specific %}
+
+
+    <script src="/dist/js/tablesorter/jquery.tablesorter.js"></script>
+    <script src="/dist/js/tablesorter/tables.js"></script>
+
+
+
     {% if evals %}
     <script type="text/javascript">
 
@@ -393,6 +386,7 @@
     {% else %}
       <div> Evaluation pending </div>
     {% endif %}
+    {% endblock %}
 
   </body>
 </html>

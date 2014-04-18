@@ -11,6 +11,37 @@
   <li><a href="#finished" data-toggle="tab">Finished projects</a></li>
 </ul>
 
+{% if report %}
+<!-- Tab panes -->
+<div class="tab-content">
+    {% if ongProjects %}
+  <div class="tab-pane fade in active" id="ongoing">
+    {% for project in ongProjects %}
+        <h3><a href="/college/report/{{ project.p_id }}">{{ project.name }}</a></h3>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="tab-pane fade" id="ongoing">
+        <p> No ongoing projects present. </p>
+    </div>
+  {% endif %}
+
+    {% if finProjects %}
+  <div class="tab-pane fade" id="finished">
+    {% for project in finProjects %}
+        <h3><a href="/college/report/{{ project.p_id }}">{{ project.name }}</a></h3>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="tab-pane fade" id="finished">
+        <p> No finished projects yet. </p>
+    </div>
+  {% endif %}
+
+
+</div>
+
+{% else %}
 <!-- Tab panes -->
 <div class="tab-content">
     {% if ongProjects %}
@@ -39,6 +70,8 @@
 
 
 </div>
+
+{% endif %}
 
 </div>
 

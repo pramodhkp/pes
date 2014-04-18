@@ -125,6 +125,57 @@ def project_list_teacher(request):
 	return render(request, "projectlist.html", { 'teacher': teacherFlag, 'finProjects': finProjects, 'ongProjects': ongProjects,
 												 'name': name, 'evals': evals})
 
+@login_required(login_url='/college/login/')
+def report_list(request):
+	user = request.user
+	finProjects = []
+	ongProjects = []
+	reportFlag = True
+	if hasattr(user, 'student'):
+		user = request.user.student
+		name = user.first_name + ' ' + user.last_name
+		id = user.s_id
+		userProjects = get_student_projects(user, id)
+	else:
+		user = request.user.teacher
+		name = user.first_name + ' ' + user.last_name
+		id = user.t_id
+		userProjects = get_teacher_projects(user, id)
+
+	for project in userProjects:
+		if project.progress != 100:
+			ongProjects.append(project)
+		else:
+			finProjects.append(project)
+
+	return render(request, "projectlist.html", {'report': reportFlag, 'name': name, 'finProjects': finProjects, 'ongProjects': ongProjects})
+
+
+
+
+
+
+@login_required(login_url='/college/login/')
+def project_report(request, id):
+	user = request.user
+	project = Project.objects.get(p_id = id)
+	evals = project.evaluation_set.all()
+	if hasattr(user, 'student'):
+		user = request.user.student
+		name = user.first_name + ' ' + user.last_name
+		if user in project.members_s.all():
+			return render(request, "report.html", {'project': project, 'evals': evals, 'name': name })
+		else:
+			return redirect('/college/student/')
+
+	else:
+		user = request.user.teacher
+		name = user.first_name + ' ' + user.last_name
+		if user in project.members_t.all():
+			return render(request, "report.html", {'project': project, 'evals': evals, 'name': name })
+		else:
+			return redirect('/college/teacher/')
+
 
 
 # Responsible for teacher dashboard. Sends details about projects under a teacher.
@@ -196,14 +247,16 @@ def profile_teacher(request, id):
 @login_required(login_url='/college/login/')
 def project_details(request, id):
 	user = None
+	studentFlag = False
 	if hasattr(request.user, 'student'):
 		user = request.user.student
+		studentFlag = True
 	else:
 		user = request.user.teacher
 	name = user.first_name + ' ' + user.last_name
 	project = Project.objects.get(p_id = id)
 	evals = project.evaluation_set.all()
-	return render(request, "projects.html", {'name' : name, 'project' : project,
+	return render(request, "projects.html", {'student': studentFlag, 'name' : name, 'project' : project,
 												 'evals': evals})
 
 # Get inputs from the evaluation form, find average and update Evaluation model
@@ -246,6 +299,6 @@ def edit_profile(request):
 @login_required(login_url='/college/login/')
 def logout(request):
 	auth_logout(request)
-	return render(request, "home.html")
+	return render(request, "login.html")
 
 

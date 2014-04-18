@@ -34,6 +34,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pes',
@@ -42,6 +43,7 @@ INSTALLED_APPS = (
     'dajaxice',
     'dajax',
     'postman',
+    'disqus'
 )
 
 TEMPLATE_LOADERS = (
@@ -132,4 +134,6 @@ POSTMAN_AUTO_MODERATE_AS = True
 # DISQUS PARAMETERS
 
 DISQUS_API_KEY = '4oTx6eWZLtgnvqIs9CIhOEg0C2chdFbXO4Xip7XI29zd0bCuHaiSg7HUA7Jkw9hj'
-DISQUS_WEBSITE_SHORTNAME = 'pes'
+DISQUS_WEBSITE_SHORTNAME = 'techmonk'
+
+SITE_ID = 1
