@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dashboard - PES</title>
+    <title>Login - PES</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/dist/css/bootstrap.css" rel="stylesheet">
@@ -30,6 +30,11 @@
                           SIGN IN</h5>
                       <form class="form form-signup" role="form" action="/college/login/" method="post">
                         {% csrf_token %}
+                        {% if error %}
+                        <div class="form-group">
+                          <p> Bad USN or Password </p>
+                        </div>
+                        {% endif %}
                       <div class="form-group">
                           <div class="input-group">
                               <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>

@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from college.models import Project, Student, Teacher, Evaluation
+from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
+from filetransfers.api import prepare_upload, serve_file
 import random
 
 
@@ -40,7 +43,19 @@ def update_project_progress(projects):
 		project.save()
 
 def main(request):
-	return render(request, "home.html")
+	return render(request, "index.html")
+
+def contact(request):
+	return render(request, "contact-us.html")
+
+def faq(request):
+	return render(request, "faq.html")
+
+def about(request):
+	return render(request, "about-us.html")
+
+def manual(request):
+	return render(request, "manual.html")
 
 # Authorize the user with USN and password
 # Check whether the logged in user is a teacher/student and redirect accordingly.
@@ -81,7 +96,7 @@ def home(request):
 	else:
 		return redirect('/college/teacher/')
 
-
+# Project list for a student
 @login_required(login_url='/college/login/')
 def project_list_student(request):
 	user = request.user.student
@@ -103,7 +118,7 @@ def project_list_student(request):
 	return render(request, "projectlist.html", {'student': studentFlag, 'finProjects': finProjects, 'ongProjects': ongProjects,
 												 'name': name, 'evals': evals})
 
-
+# Project list for a teacher
 @login_required(login_url='/college/login/')
 def project_list_teacher(request):
 	user = request.user.teacher
@@ -125,22 +140,26 @@ def project_list_teacher(request):
 	return render(request, "projectlist.html", { 'teacher': teacherFlag, 'finProjects': finProjects, 'ongProjects': ongProjects,
 												 'name': name, 'evals': evals})
 
+# Lists the projects with links to their respective reports
 @login_required(login_url='/college/login/')
 def report_list(request):
 	user = request.user
 	finProjects = []
 	ongProjects = []
 	reportFlag = True
+	student = True
 	if hasattr(user, 'student'):
 		user = request.user.student
 		name = user.first_name + ' ' + user.last_name
 		id = user.s_id
 		userProjects = get_student_projects(user, id)
+		student = True
 	else:
 		user = request.user.teacher
 		name = user.first_name + ' ' + user.last_name
 		id = user.t_id
 		userProjects = get_teacher_projects(user, id)
+		student = False
 
 	for project in userProjects:
 		if project.progress != 100:
@@ -151,10 +170,7 @@ def report_list(request):
 	return render(request, "projectlist.html", {'report': reportFlag, 'name': name, 'finProjects': finProjects, 'ongProjects': ongProjects})
 
 
-
-
-
-
+# Generates a collection of graphs based on evaluations and its details
 @login_required(login_url='/college/login/')
 def project_report(request, id):
 	user = request.user
@@ -176,7 +192,25 @@ def project_report(request, id):
 		else:
 			return redirect('/college/teacher/')
 
+@login_required(login_url='/college/login/')
+def file_upload(request, id):
+    view_url = '/college/student/upload/'
+    if request.method == 'POST':
+    	project = Project.objects.get(p_id=id)
+    	project.file = request.FILES['upload']
+    	project.save()
+    	return redirect('/college/student/upload_success/')
+    else:
+    	return redirect('/college/student/')
 
+@login_required(login_url='/college/login/')
+def file_download(request, id):
+	upload = get_object_or_404(Project, pk=id)
+	return serve_file(request, upload.file, save_as=True)
+
+@login_required(login_url='/college/login/')
+def upload_sucess(request):
+	return render(request, "upload_sucess.html")
 
 # Responsible for teacher dashboard. Sends details about projects under a teacher.
 @login_required(login_url='/college/login/')
@@ -243,7 +277,7 @@ def profile_teacher(request, id):
 	return render(request, "profile.html", {'name' : name, 'profile': profile,
 												'projects': projects})
 
-# Detaisl about the project, including evaluations
+# Details about the project, including evaluations
 @login_required(login_url='/college/login/')
 def project_details(request, id):
 	user = None
@@ -290,10 +324,9 @@ def evaluate_project(request, id):
 		return redirect("/college/teacher/")
 
 
-# Edit profile
 @login_required(login_url='/college/login/')
 def edit_profile(request):
-	return render(request, 'edit_profile.html')
+	pass
 
 # logs out user
 @login_required(login_url='/college/login/')

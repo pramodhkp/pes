@@ -6,5 +6,6 @@ django-crispy-forms==1.4.0
 django-dajax==0.9.2
 django-dajaxice==0.5.5
 django-disqus==0.4.1
+django-filetransfers==0.1.0
 django-postman==3.1.0
 wsgiref==0.1.2

@@ -56,7 +56,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav side-nav">
-            <li class="active"><a href="index.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="/college/home/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li><a href="/college/reportlist/"><i class="fa fa-bar-chart-o"></i> Reports </a></li>
             <li><a href="/college/{% if student %}student{% else %}teacher{% endif %}/projectlist"><i class="fa fa-table"></i> Projects </a></li>
             <li><a href="forms.html"><i class="fa fa-edit"></i> Evaluations </a></li>
@@ -133,7 +133,7 @@
                   </div>
                 </div>
               </div>
-              <a href="/college/projectlist/">
+              <a href="/college/{% if student %}student{% else %}teacher{% endif %}/projectlist/">
                 <div class="panel-footer announcement-bottom">
                   <div class="row">
                     <div class="col-xs-6">
@@ -160,7 +160,7 @@
                   </div>
                 </div>
               </div>
-              <a href="/college/projectlist/">
+              <a href="/college/{% if student %}student{% else %}teacher{% endif %}/projectlist/">
                 <div class="panel-footer announcement-bottom">
                   <div class="row">
                     <div class="col-xs-6">

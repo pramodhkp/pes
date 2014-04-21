@@ -74,6 +74,34 @@
   </div>
 </div><!-- /.row -->
 
+{% if student %}
+
+<h3>File upload</h3>
+<p> The project should be uploaded in .zip format </p>
+<hr/>
+
+
+<div>
+
+<form method="post" action="/college/student/upload/{{ project.p_id }}/" enctype="multipart/form-data">
+  {% csrf_token %}
+<input type="file" name="upload"/>
+<input type="submit">
+</form>
+
+</div>
+
+{% else %}
+
+<h3>Uploaded files</h3>
+<hr/>
+
+<a href="/college/teacher/download/{{ project.p_id }}/">{{ project.file.name }}</a>
+
+{% endif %}
+
+<h3>Comments</h3>
+<hr/>
 
 <div class="container" style="width: 800px;">
   {% set_disqus_identifier "pid_" project.p_id %}
